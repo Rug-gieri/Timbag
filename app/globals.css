@@ -2,25 +2,149 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #101010;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: var(--font-libre-serif);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans);
+}
+
+/* ---------- Load / entrance animations ---------- */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.load-reveal {
+  opacity: 0;
+  animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ---------- SVG wordmark "writing" animation ---------- */
+
+.wordmark-text {
+  font-family: var(--font-libre-serif), Georgia, serif;
+  fill: var(--foreground);
+}
+
+@keyframes mask-sweep {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pen-write {
+  to {
+    transform: translateX(290px);
+  }
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.wordmark-mask {
+  transform: scaleX(0);
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: mask-sweep 1.9s cubic-bezier(0.65, 0, 0.35, 1) 0.25s forwards;
+}
+
+.wordmark-pen {
+  animation: pen-write 1.8s cubic-bezier(0.65, 0, 0.35, 1) 0.25s forwards;
+}
+
+.wordmark-line {
+  stroke-dasharray: 290;
+  stroke-dashoffset: 290;
+  animation: draw-line 0.5s ease 2s forwards;
+}
+
+/* ---------- Partner carousel ---------- */
+
+@keyframes partner-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.partner-marquee-track {
+  width: max-content;
+  animation: partner-scroll 30s linear infinite;
+}
+
+/* ---------- Scroll reveal ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(6px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .load-reveal {
+    animation: none;
+    opacity: 1;
+  }
+
+  .wordmark-mask,
+  .wordmark-pen,
+  .wordmark-line {
+    animation: none;
+  }
+
+  .wordmark-mask {
+    transform: none;
+  }
+
+  .wordmark-pen {
+    transform: none;
+  }
+
+  .wordmark-line {
+    stroke-dashoffset: 0;
+  }
+
+  .partner-marquee-track {
+    animation: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
 }
