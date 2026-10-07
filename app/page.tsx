@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { ContactForm } from "./components/contact-form";
 import { PartnerCarousel } from "./components/partner-carousel";
 import { Reveal } from "./components/reveal";
@@ -52,6 +53,7 @@ const pillars = [
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 100);
@@ -62,38 +64,76 @@ export default function Home() {
 
   return (
     <div className="flex flex-1 flex-col bg-white text-zinc-900">
-      <header className="sticky top-0 z-50 border-b border-zinc-200/70 bg-white/80 backdrop-blur">
+      <header
+        className={`sticky top-0 z-50 border-b border-zinc-200/70 bg-white/80 backdrop-blur transition-shadow duration-300 ${
+          scrolled ? "shadow-sm" : "shadow-none"
+        }`}
+      >
         <nav className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-          <div className="w-[128px]" />
           <a
             href="#inicio"
-            className={`font-serif text-xl font-semibold text-zinc-900 transition-opacity duration-300 ${
-              scrolled ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+            aria-label="Gambit — início"
+            className="flex items-center"
+            onClick={() => setMenuOpen(false)}
           >
-            Gambit
+            <Image
+              src="/gambit_logo.png"
+              alt="Gambit"
+              width={602}
+              height={169}
+              className="h-7 w-auto"
+            />
           </a>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <ul className="hidden items-center gap-1 md:flex">
+
+          <ul className="hidden items-center gap-1 md:flex">
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className="block rounded-full px-4 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <button
+            type="button"
+            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+            className="flex h-11 w-11 items-center justify-center rounded-full text-zinc-700 transition-colors hover:bg-zinc-100 md:hidden"
+          >
+            {menuOpen ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+                <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+                <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+              </svg>
+            )}
+          </button>
+        </nav>
+
+        {menuOpen && (
+          <div className="border-t border-zinc-200/70 bg-white md:hidden">
+            <ul className="mx-auto max-w-5xl px-4 py-2">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className="block rounded-full px-4 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-xl px-4 py-3 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
                   >
                     {link.label}
                   </a>
                 </li>
               ))}
             </ul>
-            <a
-              href="#contato"
-              className="ml-2 inline-flex h-10 min-h-10 items-center rounded-full bg-zinc-900 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-700"
-            >
-              Fale conosco
-            </a>
           </div>
-        </nav>
+        )}
       </header>
 
       <main className="flex-1">
@@ -103,7 +143,7 @@ export default function Home() {
         >
 
           <h1
-            className="load-reveal mt-6 font-[family-name:var(--font-display)] text-8xl font-bold tracking-tight text-zinc-900 sm:text-9xl lg:text-[20rem]"
+            className="load-reveal mt-6 font-display text-8xl font-bold tracking-tight text-zinc-900 sm:text-9xl lg:text-[20rem]"
             style={{ animationDelay: "0.4s" }}
           >
             Gambit
