@@ -5,7 +5,7 @@ const partners = [
   { name: "Infanto Modas", logo: "/infanto_modas_logo.png" },
   { name: "Arawá", logo: "/arawa-logo.png" },
   { name: "Ahois", logo: "/ahois_logo.png" },
-  { name: "Torres Barbaearia" },
+  { name: "Torres Barbaearia", logo: "/torres_logo.png" },
   { name: "GL Soluções Elétricas" },
   { name: "Café Preto" },
 ];

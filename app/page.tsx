@@ -1,4 +1,6 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
 import { ContactForm } from "./components/contact-form";
 import { PartnerCarousel } from "./components/partner-carousel";
 import { Reveal } from "./components/reveal";
@@ -11,7 +13,7 @@ const navLinks = [
 
 const products = [
   {
-    title: "SEO & Tráfego",
+    title: "Aumente suas vendas (SEO e tráfego)",
     description: "Sua empresa encontrada quando alguém procura pelo que você faz.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
@@ -21,8 +23,8 @@ const products = [
     ),
   },
   {
-    title: "Social Media",
-    description: "Presença consistente que transforma seguidores em clientes.",
+    title: "Retenha seus clientes",
+    description: "Presença consistente que mantém seus clientes por perto.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
         <path d="M4 4h16v12H7l-3 3z" strokeLinejoin="round" />
@@ -31,22 +33,12 @@ const products = [
     ),
   },
   {
-    title: "Landing Pages",
-    description: "Páginas claras que convertem visitantes em contatos.",
+    title: "Tecnologia de verdade (sites e automação para seu negócio)",
+    description: "Páginas claras que convertem visitantes em contatos. Processos que funcionam sozinhos enquanto você foca no negócio.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
         <rect x="3" y="4" width="18" height="16" rx="2" />
         <path d="M3 9h18M8 6h.01" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    title: "Automação",
-    description: "Processos que funcionam sozinhos enquanto você foca no negócio.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-6 w-6">
-        <path d="M12 3v4m0 10v4M3 12h4m10 0h4" strokeLinecap="round" />
-        <circle cx="12" cy="12" r="3" />
       </svg>
     ),
   },
@@ -59,23 +51,27 @@ const pillars = [
 ];
 
 export default function Home() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 100);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="flex flex-1 flex-col bg-white text-zinc-900">
       <header className="sticky top-0 z-50 border-b border-zinc-200/70 bg-white/80 backdrop-blur">
         <nav className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+          <div className="w-[128px]" />
           <a
             href="#inicio"
-            className="load-reveal inline-flex items-center"
-            aria-label="Gambit"
+            className={`font-serif text-xl font-semibold text-zinc-900 transition-opacity duration-300 ${
+              scrolled ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
           >
-            <Image
-              src="/gambit_logo.png"
-              alt="Gambit"
-              width={128}
-              height={36}
-              priority
-              className="h-auto w-auto"
-            />
+            Gambit
           </a>
           <div className="flex items-center gap-1 sm:gap-2">
             <ul className="hidden items-center gap-1 md:flex">
@@ -105,55 +101,23 @@ export default function Home() {
           id="inicio"
           className="mx-auto flex max-w-5xl flex-col items-center px-6 pt-24 pb-20 text-center sm:pt-32"
         >
-          <p className="load-reveal rounded-full border border-zinc-200 px-4 py-1.5 text-xs font-medium tracking-wide text-zinc-600">
-            Estratégias digitais para evoluir seu negócio
-          </p>
-          <h1 className="mt-8 w-full" aria-label="Gambit">
-            <svg
-              viewBox="0 0 400 92"
-              className="mx-auto w-full max-w-md"
-              role="img"
-              aria-hidden="true"
-            >
-              <defs>
-                <clipPath id="gambit-reveal">
-                  <rect x="55" y="0" width="290" height="92" className="wordmark-mask" />
-                </clipPath>
-              </defs>
-              <text
-                className="wordmark-text"
-                x="200"
-                y="66"
-                fontSize="72"
-                fontWeight="600"
-                textAnchor="middle"
-                clipPath="url(#gambit-reveal)"
-              >
-                Gambit
-              </text>
-              <circle className="wordmark-pen" cx="55" cy="79" r="3" fill="#101010" />
-              <line
-                className="wordmark-line"
-                x1="55"
-                y1="83"
-                x2="345"
-                y2="83"
-                stroke="#101010"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                pathLength={290}
-              />
-            </svg>
+
+          <h1
+            className="load-reveal mt-6 font-[family-name:var(--font-display)] text-8xl font-bold tracking-tight text-zinc-900 sm:text-9xl lg:text-[20rem]"
+            style={{ animationDelay: "0.4s" }}
+          >
+            Gambit
           </h1>
+
           <p
-            className="load-reveal mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600 sm:text-xl"
+            className="load-reveal mt-4 max-w-2xl text-base leading-relaxed text-zinc-600 sm:text-lg"
             style={{ animationDelay: "0.7s" }}
           >
-            Ficar na mesma é ficar para trás. Mudar e avançar é a sua próxima
-            jogada.
+            Sua próxima <em className="font-serif italic">jogada</em> começa
+            aqui. Ficar na mesma é ficar para trás.
           </p>
           <div
-            className="load-reveal mt-10 flex flex-col gap-3 sm:flex-row"
+            className="load-reveal mt-8 flex flex-col gap-3 sm:flex-row"
             style={{ animationDelay: "0.9s" }}
           >
             <a
@@ -241,7 +205,7 @@ export default function Home() {
                 O que a Gambit faz
               </h2>
             </Reveal>
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 md:grid-cols-3">
               {products.map((product, index) => (
                 <Reveal key={product.title} delay={index * 100}>
                   <div className="flex h-full flex-col rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-md">
