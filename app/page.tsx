@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ContactForm } from "./components/contact-form";
 import { PartnerCarousel } from "./components/partner-carousel";
+import { Logo } from "./components/logo";
 import { Reveal } from "./components/reveal";
 
 const navLinks = [
   { href: "#decisao", label: "A decisão" },
   { href: "#produtos", label: "Produtos" },
+  { href: "#sobre", label: "Sobre" },
   { href: "#contato", label: "Contato" },
 ];
 
@@ -76,13 +78,7 @@ export default function Home() {
             className="flex items-center"
             onClick={() => setMenuOpen(false)}
           >
-            <Image
-              src="/gambit_logo.png"
-              alt="Gambit"
-              width={602}
-              height={169}
-              className="h-7 w-auto"
-            />
+            <Logo />
           </a>
 
           <ul className="hidden items-center gap-1 md:flex">
@@ -274,6 +270,43 @@ export default function Home() {
         </section>
 
         <PartnerCarousel />
+
+        <section
+          id="sobre"
+          className="scroll-mt-24 border-t border-zinc-200/70 bg-zinc-50"
+        >
+          <div className="mx-auto grid max-w-5xl items-center gap-12 px-6 py-20 sm:py-28 md:grid-cols-2 md:gap-16">
+            <Reveal>
+              <div className="relative mx-auto aspect-square w-full max-w-sm overflow-hidden rounded-full border border-zinc-200 bg-zinc-100">
+                <Image
+                  src="/meig.jpg"
+                  alt="Foto de Rafael Ruggieri"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 384px"
+                  className="object-cover"
+                />
+              </div>
+            </Reveal>
+            <Reveal delay={120}>
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+                Sobre
+              </p>
+              <h2 className="mt-3 font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
+                Quem está por trás da Gambit
+              </h2>
+              <p className="mt-4 text-lg leading-relaxed text-zinc-600">
+                Ajudo empresas a darem o próximo passo: estratégia, presença
+                digital e tecnologia trabalhando juntas para gerar crescimento
+                real. Sem fórmula mágica — plano claro, execução rápida e
+                resultado que dá para medir.
+              </p>
+              <p className="mt-6 font-serif text-xl font-semibold">
+                Rafael Ruggieri
+              </p>
+              <p className="text-sm text-zinc-500">Fundador · Gambit</p>
+            </Reveal>
+          </div>
+        </section>
 
         <section
           id="contato"

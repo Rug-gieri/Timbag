@@ -7,7 +7,6 @@ const partners = [
   { name: "Ahois", logo: "/ahois_logo.png" },
   { name: "Torres Barbaearia", logo: "/torres_logo.png" },
   { name: "GL Soluções Elétricas" },
-  { name: "Café Preto" },
 ];
 
 export function PartnerCarousel() {
