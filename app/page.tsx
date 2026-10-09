@@ -351,7 +351,10 @@ export default function Home() {
           <a href="#inicio" className="font-serif text-xl font-semibold text-zinc-900">
             Gambit
           </a>
-          <p>© 2026 Gambit. Estratégias digitais para evoluir seu negócio.</p>
+          <p>
+            © 2026 Gambit · Porto Velho, Rondônia. Estratégias digitais para
+            evoluir seu negócio.
+          </p>
         </div>
       </footer>
     </div>
