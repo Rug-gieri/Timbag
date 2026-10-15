@@ -103,69 +103,96 @@ export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-white text-zinc-900">
       <header
-        className={`sticky top-0 z-50 border-b border-zinc-200/70 bg-white/80 backdrop-blur transition-shadow duration-300 ${
-          scrolled ? "shadow-sm" : "shadow-none"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out pointer-events-none ${
+          scrolled ? "pt-3 sm:pt-4" : "pt-0"
         }`}
       >
-        <nav className="flex h-16 w-full items-center justify-between px-6 sm:px-10 lg:px-16">
-          <a
-            href="#inicio"
-            aria-label="Gambit — início"
-            className="flex items-center"
-            onClick={() => setMenuOpen(false)}
+        <div
+          className={`pointer-events-auto mx-auto transition-all duration-300 ease-out ${
+            scrolled
+              ? "max-w-4xl px-3 sm:px-4"
+              : "max-w-full px-0"
+          }`}
+        >
+          <div
+            className={`transition-all duration-300 ease-out ${
+              scrolled
+                ? "rounded-full border border-zinc-200/80 bg-white/80 shadow-lg shadow-zinc-900/5 backdrop-blur-md"
+                : "border-b border-zinc-200/70 bg-white/80 backdrop-blur-md"
+            }`}
           >
-            <Logo />
-          </a>
+            <nav
+              className={`flex w-full items-center justify-between transition-all duration-300 ${
+                scrolled
+                  ? "h-14 px-4 sm:px-6"
+                  : "h-16 px-6 sm:px-10 lg:px-16"
+              }`}
+            >
+              <a
+                href="#inicio"
+                aria-label="Gambit — início"
+                className="flex items-center"
+                onClick={() => setMenuOpen(false)}
+              >
+                <Logo />
+              </a>
 
-          <ul className="hidden items-center gap-1 md:flex">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="block rounded-full px-4 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+              <ul className="hidden items-center gap-1 md:flex">
+                {navLinks.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="block rounded-full px-4 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
 
-          <button
-            type="button"
-            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
-            className="flex h-11 w-11 items-center justify-center rounded-full text-zinc-700 transition-colors hover:bg-zinc-100 md:hidden"
-          >
-            {menuOpen ? (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
-                <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
-                <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-              </svg>
-            )}
-          </button>
-        </nav>
-
-        {menuOpen && (
-          <div className="border-t border-zinc-200/70 bg-white md:hidden">
-            <ul className="px-6 py-2 sm:px-10">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="block rounded-xl px-4 py-3 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+              <button
+                type="button"
+                aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen((open) => !open)}
+                className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-700 transition-colors hover:bg-zinc-100 md:hidden"
+              >
+                {menuOpen ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+                    <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
+                    <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+                  </svg>
+                )}
+              </button>
+            </nav>
           </div>
-        )}
+
+          {/* Mobile dropdown menu */}
+          {menuOpen && (
+            <div
+              className={`mt-2 overflow-hidden border border-zinc-200/80 bg-white/95 backdrop-blur-md transition-all md:hidden ${
+                scrolled ? "rounded-2xl shadow-xl shadow-zinc-900/5" : "border-t"
+              }`}
+            >
+              <ul className="p-3">
+                {navLinks.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block rounded-xl px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </header>
 
       <main className="flex-1">
