@@ -1,17 +1,9 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { PartnerCarousel } from "./components/partner-carousel";
-import { Logo } from "./components/logo";
 import { Reveal } from "./components/reveal";
-
-const navLinks = [
-  { href: "#decisao", label: "A decisão" },
-  { href: "#produtos", label: "Produtos" },
-  { href: "#sobre", label: "Sobre" },
-  { href: "#contato", label: "Contato" },
-];
+import { SiteFooter } from "./components/site-footer";
+import { SiteHeader } from "./components/site-header";
+import DecisaoShowcase from "./components/decisao-showcase";
 
 const products = [
   {
@@ -90,83 +82,9 @@ const pillars = [
 ];
 
 export default function Home() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 100);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
     <div className="flex flex-1 flex-col bg-white text-zinc-900">
-      <header
-        className={`sticky top-0 z-50 border-b border-zinc-200/70 bg-white/80 backdrop-blur transition-shadow duration-300 ${
-          scrolled ? "shadow-sm" : "shadow-none"
-        }`}
-      >
-        <nav className="flex h-16 w-full items-center justify-between px-6 sm:px-10 lg:px-16">
-          <a
-            href="#inicio"
-            aria-label="Gambit — início"
-            className="flex items-center"
-            onClick={() => setMenuOpen(false)}
-          >
-            <Logo />
-          </a>
-
-          <ul className="hidden items-center gap-1 md:flex">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="block rounded-full px-4 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <button
-            type="button"
-            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
-            className="flex h-11 w-11 items-center justify-center rounded-full text-zinc-700 transition-colors hover:bg-zinc-100 md:hidden"
-          >
-            {menuOpen ? (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
-                <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
-                <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-              </svg>
-            )}
-          </button>
-        </nav>
-
-        {menuOpen && (
-          <div className="border-t border-zinc-200/70 bg-white md:hidden">
-            <ul className="px-6 py-2 sm:px-10">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="block rounded-xl px-4 py-3 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </header>
+      <SiteHeader />
 
       <main className="flex-1">
         <section
@@ -207,65 +125,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section
-          id="decisao"
-          className="scroll-mt-24 border-t border-zinc-200/70 bg-zinc-50"
-        >
-          <div className="mx-auto max-w-5xl px-6 py-20 sm:py-28">
-            <Reveal>
-              <p className="text-center text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
-                A decisão
-              </p>
-              <h2 className="mx-auto mt-3 max-w-xl text-center font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
-                Escolha ficar na mesma — ou mudar e avançar
-              </h2>
-            </Reveal>
-            <div className="mt-12 grid gap-5 md:grid-cols-2">
-              <Reveal>
-                <div className="flex h-full flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-8 opacity-80">
-                  <div>
-                    <h3 className="font-serif text-2xl">Ficar na mesma</h3>
-                    <p className="mt-3 text-zinc-600">
-                      Mais do mesmo. Os mesmos processos, os mesmos resultados
-                      e, ano após ano, mais distante do que os concorrentes
-                      estão fazendo.
-                    </p>
-                  </div>
-                  <ul className="mt-8 space-y-2 text-sm text-zinc-500">
-                    <li>Sem novos clientes</li>
-                    <li>Sem visibilidade digital</li>
-                    <li>Sem plano para crescer</li>
-                  </ul>
-                </div>
-              </Reveal>
-              <Reveal delay={120}>
-                <div className="flex h-full flex-col justify-between rounded-2xl bg-zinc-900 p-8 text-white">
-                  <div>
-                    <h3 className="font-serif text-2xl">Evoluir</h3>
-                    <p className="mt-3 text-zinc-300">
-                      Um plano digital simples e executável: posicionar,
-                      atrair, converter e medir — para crescer com
-                      previsibilidade.
-                    </p>
-                  </div>
-                  <div className="mt-8">
-                    <ul className="space-y-2 text-sm text-zinc-300">
-                      <li>Mais clientes chegando até você</li>
-                      <li>Presença digital consistente</li>
-                      <li>Decisões guiadas por dados</li>
-                    </ul>
-                    <a
-                      href="#contato"
-                      className="mt-8 inline-flex h-12 min-h-12 items-center justify-center rounded-full bg-white px-6 text-base font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
-                    >
-                      Quero evoluir
-                    </a>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
+        {/* Seção unificada: A Decisão com Efeito de Transição Scroll Pinning & Morphing em Estilo Clean Branco */}
+        <DecisaoShowcase />
 
         <section id="produtos" className="scroll-mt-24">
           <div className="mx-auto max-w-5xl px-6 py-20 sm:py-28">
@@ -408,17 +269,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-zinc-200/70">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm text-zinc-500 sm:flex-row">
-          <a href="#inicio" className="font-serif text-xl font-semibold text-zinc-900">
-            Gambit
-          </a>
-          <p>
-            © 2026 Gambit · Porto Velho, Rondônia. Estratégias digitais para
-            evoluir seu negócio.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
