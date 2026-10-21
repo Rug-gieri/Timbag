@@ -254,7 +254,7 @@ export default function Home() {
 
         <section
           id="sobre"
-          className="scroll-mt-24 border-t border-zinc-200/70 bg-zinc-50"
+          className="scroll-mt-24 border-t border-zinc-800 bg-zinc-950 text-white"
         >
           {/* ============================================================== */}
           {/* 1. VIEW MOBILE (< md): Card estilo perfil de rede social        */}
@@ -262,20 +262,20 @@ export default function Home() {
           <div className="md:hidden px-4 py-16">
             <Reveal>
               <div className="text-center mb-6">
-                <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-400">
                   Sobre
                 </p>
-                <h2 className="mt-1 font-serif text-3xl font-semibold tracking-tight text-zinc-900">
+                <h2 className="mt-1 font-serif text-3xl font-semibold tracking-tight text-white">
                   Quem está por trás da Gambit
                 </h2>
               </div>
             </Reveal>
 
             <Reveal delay={100}>
-              <div className="mx-auto max-w-md rounded-3xl border border-zinc-200/90 bg-white p-5 shadow-xs">
+              <div className="mx-auto max-w-md rounded-3xl border border-zinc-800/90 bg-zinc-900/90 p-5 shadow-xl backdrop-blur-sm">
                 {/* Header do Perfil: Foto no canto esquerdo + Nome e Tags estilo Rede Social */}
                 <div className="flex items-start gap-3.5">
-                  <div className="relative w-18 h-18 shrink-0 rounded-full overflow-hidden border-2 border-zinc-200 shadow-xs bg-zinc-100">
+                  <div className="relative w-18 h-18 shrink-0 rounded-full overflow-hidden border-2 border-zinc-700 shadow-sm bg-zinc-800">
                     <Image
                       src="/meig.jpg"
                       alt="Foto de Rafael Ruggieri"
@@ -287,13 +287,13 @@ export default function Home() {
 
                   <div className="flex-1 min-w-0 pt-0.5">
                     <div className="flex items-center gap-1.5">
-                      <h3 className="font-serif text-lg font-bold text-zinc-900 truncate">
+                      <h3 className="font-serif text-lg font-bold text-white truncate">
                         Rafael Ruggieri
                       </h3>
                       <svg
                         viewBox="0 0 24 24"
                         fill="currentColor"
-                        className="w-4 h-4 text-emerald-600 shrink-0"
+                        className="w-4 h-4 text-emerald-400 shrink-0"
                       >
                         <path
                           fillRule="evenodd"
@@ -303,7 +303,7 @@ export default function Home() {
                       </svg>
                     </div>
 
-                    <p className="text-xs font-mono text-zinc-500 mt-0.5">
+                    <p className="text-xs font-mono text-zinc-400 mt-0.5">
                       Fundador · Gambit
                     </p>
 
@@ -312,7 +312,7 @@ export default function Home() {
                 </div>
 
                 {/* Bio do Perfil */}
-                <p className="mt-4 text-sm leading-relaxed text-zinc-600">
+                <p className="mt-4 text-sm leading-relaxed text-zinc-300">
                   Ajudo empresas a darem o próximo passo: estratégia, presença
                   digital e tecnologia trabalhando juntas para gerar crescimento
                   real. Sem fórmula mágica — plano claro, execução rápida e
@@ -320,9 +320,9 @@ export default function Home() {
                 </p>
 
                 {/* Linha de Metadados */}
-                <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500 font-mono">
+                <div className="mt-4 pt-3 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
                   <span className="flex items-center gap-1.5">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3.5 h-3.5 text-zinc-400">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3.5 h-3.5 text-zinc-500">
                       <circle cx="12" cy="12" r="10" />
                       <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
                       <path d="M2 12h20" />
@@ -333,7 +333,7 @@ export default function Home() {
                 </div>
 
                 {/* Stacks e Tecnologias */}
-                <div className="mt-4 pt-3 border-t border-zinc-100">
+                <div className="mt-4 pt-3 border-t border-zinc-800">
                   <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block mb-2.5">
                     Stacks & Tecnologias
                   </span>
@@ -341,7 +341,7 @@ export default function Home() {
                     {techStacks.map((tech) => (
                       <span
                         key={tech.name}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-50 border border-zinc-200/90 text-xs font-medium text-zinc-700 shadow-2xs"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-800/80 border border-zinc-700/60 text-xs font-medium text-zinc-200 shadow-2xs"
                       >
                         {tech.icon}
                         <span>{tech.name}</span>
@@ -351,17 +351,17 @@ export default function Home() {
                 </div>
 
                 {/* Botão de contato rápido */}
-                <div className="mt-5 pt-3 border-t border-zinc-100">
+                <div className="mt-5 pt-3 border-t border-zinc-800">
                   <a
                     href="https://wa.me/5569992418704"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-zinc-900 text-xs font-medium text-white transition-all hover:bg-zinc-800 active:scale-[0.98]"
+                    className="w-full inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-white text-xs font-medium text-zinc-950 transition-all hover:bg-zinc-200 active:scale-[0.98]"
                   >
                     <svg
                       viewBox="0 0 24 24"
                       fill="currentColor"
-                      className="h-3.5 w-3.5 text-emerald-400"
+                      className="h-3.5 w-3.5 text-emerald-600"
                     >
                       <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1s.9 2.44 1.03 2.61c.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.18-.47-.3" />
                     </svg>
@@ -378,7 +378,7 @@ export default function Home() {
           {/* ============================================================== */}
           <div className="hidden md:grid max-w-5xl mx-auto items-center gap-12 px-6 py-28 md:grid-cols-2 md:gap-16">
             <Reveal>
-              <div className="relative mx-auto aspect-square w-full max-w-sm overflow-hidden rounded-full border border-zinc-200 bg-zinc-100 shadow-sm">
+              <div className="relative mx-auto aspect-square w-full max-w-sm overflow-hidden rounded-full border border-zinc-800 bg-zinc-900 shadow-xl">
                 <Image
                   src="/meig.jpg"
                   alt="Foto de Rafael Ruggieri"
@@ -389,25 +389,25 @@ export default function Home() {
               </div>
             </Reveal>
             <Reveal delay={120}>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-400">
                 Sobre
               </p>
-              <h2 className="mt-3 font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
+              <h2 className="mt-3 font-serif text-4xl font-semibold tracking-tight sm:text-5xl text-white">
                 Quem está por trás da Gambit
               </h2>
-              <p className="mt-4 text-lg leading-relaxed text-zinc-600">
+              <p className="mt-4 text-lg leading-relaxed text-zinc-300">
                 Ajudo empresas a darem o próximo passo: estratégia, presença
                 digital e tecnologia trabalhando juntas para gerar crescimento
                 real. Sem fórmula mágica — plano claro, execução rápida e
                 resultado que dá para medir.
               </p>
               
-              <div className="mt-6 flex items-center justify-between border-b border-zinc-200/80 pb-4">
+              <div className="mt-6 flex items-center justify-between border-b border-zinc-800 pb-4">
                 <div>
-                  <p className="font-serif text-xl font-semibold text-zinc-900">
+                  <p className="font-serif text-xl font-semibold text-white">
                     Rafael Ruggieri
                   </p>
-                  <p className="text-sm text-zinc-500">Fundador · Gambit</p>
+                  <p className="text-sm text-zinc-400">Fundador · Gambit</p>
                 </div>
                 
               </div>
@@ -421,7 +421,7 @@ export default function Home() {
                   {techStacks.map((tech) => (
                     <span
                       key={tech.name}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-zinc-200/90 text-xs font-medium text-zinc-800 shadow-2xs hover:border-zinc-300 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-200 shadow-2xs hover:border-zinc-700 transition-colors"
                     >
                       {tech.icon}
                       <span>{tech.name}</span>
