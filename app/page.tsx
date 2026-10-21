@@ -81,6 +81,82 @@ const pillars = [
   "Resultado mensurável",
 ];
 
+const techStacks = [
+  {
+    name: "Next.js",
+    icon: (
+      <svg viewBox="0 0 180 180" className="w-3.5 h-3.5 shrink-0" fill="currentColor">
+        <mask height="180" id="mask-next" maskUnits="userSpaceOnUse" width="180" x="0" y="0" style={{ maskType: "alpha" }}>
+          <circle cx="90" cy="90" fill="black" r="90" />
+        </mask>
+        <g mask="url(#mask-next)">
+          <circle cx="90" cy="90" fill="black" r="90" />
+          <path d="M149.508 157.52L69.142 54H54V125.97H66.1136V69.3836L139.999 164.845C143.333 162.614 146.509 160.165 149.508 157.52Z" fill="white" />
+          <rect fill="white" height="72" width="12" x="115" y="54" />
+        </g>
+      </svg>
+    ),
+  },
+  {
+    name: "React",
+    icon: (
+      <svg viewBox="-11.5 -10.23174 23 20.46348" className="w-3.5 h-3.5 shrink-0 text-[#087ea4]" fill="currentColor">
+        <circle cx="0" cy="0" r="2.05" />
+        <g stroke="currentColor" strokeWidth="1" fill="none">
+          <ellipse rx="11" ry="4.2" />
+          <ellipse rx="11" ry="4.2" transform="rotate(60)" />
+          <ellipse rx="11" ry="4.2" transform="rotate(120)" />
+        </g>
+      </svg>
+    ),
+  },
+  {
+    name: "TypeScript",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0 text-[#3178c6]" fill="currentColor">
+        <rect width="24" height="24" rx="4" fill="#3178c6" />
+        <path d="M11.5 8.5H5.5V11H7.2V19.5H9.8V11H11.5V8.5ZM19.2 11.5C18.8 10.5 17.8 9.8 16.3 9.8C14.5 9.8 13.4 10.9 13.4 12.4C13.4 13.9 14.3 14.7 15.8 15.3L16.4 15.5C17.3 15.9 17.7 16.3 17.7 16.9C17.7 17.6 17.1 18.1 16.2 18.1C15.2 18.1 14.5 17.5 14.1 16.5L12 17.7C12.7 19.3 14.2 20.4 16.2 20.4C18.6 20.4 20.1 19 20.1 16.9C20.1 15.2 19 14.3 17.4 13.7L16.8 13.5C16.1 13.2 15.8 12.9 15.8 12.3C15.8 11.8 16.2 11.4 16.9 11.4C17.6 11.4 18.1 11.8 18.3 12.4L19.2 11.5Z" fill="white" />
+      </svg>
+    ),
+  },
+  {
+    name: "Tailwind CSS",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0 text-[#38bdf8]" fill="currentColor">
+        <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z" />
+      </svg>
+    ),
+  },
+  {
+    name: "Claude & IA",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 shrink-0 text-[#d97706]">
+        <path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z" />
+      </svg>
+    ),
+  },
+  {
+    name: "Automações & APIs",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-3.5 h-3.5 shrink-0 text-emerald-600">
+        <rect x="2" y="2" width="8" height="8" rx="2" />
+        <rect x="14" y="2" width="8" height="8" rx="2" />
+        <rect x="8" y="14" width="8" height="8" rx="2" />
+        <path d="M6 10v2a2 2 0 0 0 2 2h4m6-4v2a2 2 0 0 1-2 2h-4" />
+      </svg>
+    ),
+  },
+  {
+    name: "Python & Node",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-3.5 h-3.5 shrink-0 text-zinc-700">
+        <polyline points="16 18 22 12 16 6" />
+        <polyline points="8 6 2 12 8 18" />
+      </svg>
+    ),
+  },
+];
+
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-white text-zinc-900">
@@ -180,14 +256,141 @@ export default function Home() {
           id="sobre"
           className="scroll-mt-24 border-t border-zinc-200/70 bg-zinc-50"
         >
-          <div className="mx-auto grid max-w-5xl items-center gap-12 px-6 py-20 sm:py-28 md:grid-cols-2 md:gap-16">
+          {/* ============================================================== */}
+          {/* 1. VIEW MOBILE (< md): Card estilo perfil de rede social        */}
+          {/* ============================================================== */}
+          <div className="md:hidden px-4 py-16">
             <Reveal>
-              <div className="relative mx-auto aspect-square w-full max-w-sm overflow-hidden rounded-full border border-zinc-200 bg-zinc-100">
+              <div className="text-center mb-6">
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+                  Sobre
+                </p>
+                <h2 className="mt-1 font-serif text-3xl font-semibold tracking-tight text-zinc-900">
+                  Quem está por trás da Gambit
+                </h2>
+              </div>
+            </Reveal>
+
+            <Reveal delay={100}>
+              <div className="mx-auto max-w-md rounded-3xl border border-zinc-200/90 bg-white p-5 shadow-xs">
+                {/* Header do Perfil: Foto no canto esquerdo + Nome e Tags estilo Rede Social */}
+                <div className="flex items-start gap-3.5">
+                  <div className="relative w-18 h-18 shrink-0 rounded-full overflow-hidden border-2 border-zinc-200 shadow-xs bg-zinc-100">
+                    <Image
+                      src="/meig.jpg"
+                      alt="Foto de Rafael Ruggieri"
+                      fill
+                      sizes="72px"
+                      className="object-cover"
+                    />
+                    <span
+                      title="Disponível"
+                      className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white"
+                    />
+                  </div>
+
+                  <div className="flex-1 min-w-0 pt-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-serif text-lg font-bold text-zinc-900 truncate">
+                        Rafael Ruggieri
+                      </h3>
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="w-4 h-4 text-emerald-600 shrink-0"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+
+                    <p className="text-xs font-mono text-zinc-500 mt-0.5">
+                      Fundador · Gambit
+                    </p>
+
+                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700 border border-emerald-200/80">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>Disponível para projetos</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bio do Perfil */}
+                <p className="mt-4 text-sm leading-relaxed text-zinc-600">
+                  Ajudo empresas a darem o próximo passo: estratégia, presença
+                  digital e tecnologia trabalhando juntas para gerar crescimento
+                  real. Sem fórmula mágica — plano claro, execução rápida e
+                  resultado que dá para medir.
+                </p>
+
+                {/* Linha de Metadados */}
+                <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500 font-mono">
+                  <span className="flex items-center gap-1.5">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3.5 h-3.5 text-zinc-400">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                      <path d="M2 12h20" />
+                    </svg>
+                    gambit.com.br
+                  </span>
+                  <span>Estratégia & Tech</span>
+                </div>
+
+                {/* Stacks e Tecnologias */}
+                <div className="mt-4 pt-3 border-t border-zinc-100">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block mb-2.5">
+                    Stacks & Tecnologias
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {techStacks.map((tech) => (
+                      <span
+                        key={tech.name}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-50 border border-zinc-200/90 text-xs font-medium text-zinc-700 shadow-2xs"
+                      >
+                        {tech.icon}
+                        <span>{tech.name}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Botão de contato rápido */}
+                <div className="mt-5 pt-3 border-t border-zinc-100">
+                  <a
+                    href="https://wa.me/5569992418704"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-zinc-900 text-xs font-medium text-white transition-all hover:bg-zinc-800 active:scale-[0.98]"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="h-3.5 w-3.5 text-emerald-400"
+                    >
+                      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1s.9 2.44 1.03 2.61c.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.18-.47-.3" />
+                    </svg>
+                    <span>Falar no WhatsApp</span>
+                  </a>
+                </div>
+
+              </div>
+            </Reveal>
+          </div>
+
+          {/* ============================================================== */}
+          {/* 2. VIEW DESKTOP (>= md): Layout editorial refinado              */}
+          {/* ============================================================== */}
+          <div className="hidden md:grid max-w-5xl mx-auto items-center gap-12 px-6 py-28 md:grid-cols-2 md:gap-16">
+            <Reveal>
+              <div className="relative mx-auto aspect-square w-full max-w-sm overflow-hidden rounded-full border border-zinc-200 bg-zinc-100 shadow-sm">
                 <Image
                   src="/meig.jpg"
                   alt="Foto de Rafael Ruggieri"
                   fill
-                  sizes="(max-width: 768px) 100vw, 384px"
+                  sizes="384px"
                   className="object-cover"
                 />
               </div>
@@ -205,10 +408,37 @@ export default function Home() {
                 real. Sem fórmula mágica — plano claro, execução rápida e
                 resultado que dá para medir.
               </p>
-              <p className="mt-6 font-serif text-xl font-semibold">
-                Rafael Ruggieri
-              </p>
-              <p className="text-sm text-zinc-500">Fundador · Gambit</p>
+              
+              <div className="mt-6 flex items-center justify-between border-b border-zinc-200/80 pb-4">
+                <div>
+                  <p className="font-serif text-xl font-semibold text-zinc-900">
+                    Rafael Ruggieri
+                  </p>
+                  <p className="text-sm text-zinc-500">Fundador · Gambit</p>
+                </div>
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 border border-emerald-200/80">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Disponível para projetos</span>
+                </div>
+              </div>
+
+              {/* Stacks no Desktop */}
+              <div className="mt-6">
+                <span className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold block mb-3">
+                  Stack & Tecnologias
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {techStacks.map((tech) => (
+                    <span
+                      key={tech.name}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-zinc-200/90 text-xs font-medium text-zinc-800 shadow-2xs hover:border-zinc-300 transition-colors"
+                    >
+                      {tech.icon}
+                      <span>{tech.name}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
             </Reveal>
           </div>
         </section>
