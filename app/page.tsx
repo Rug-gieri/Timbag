@@ -283,10 +283,6 @@ export default function Home() {
                       sizes="72px"
                       className="object-cover"
                     />
-                    <span
-                      title="Disponível"
-                      className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white"
-                    />
                   </div>
 
                   <div className="flex-1 min-w-0 pt-0.5">
@@ -311,10 +307,7 @@ export default function Home() {
                       Fundador · Gambit
                     </p>
 
-                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700 border border-emerald-200/80">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span>Disponível para projetos</span>
-                    </div>
+                   
                   </div>
                 </div>
 
@@ -416,10 +409,7 @@ export default function Home() {
                   </p>
                   <p className="text-sm text-zinc-500">Fundador · Gambit</p>
                 </div>
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 border border-emerald-200/80">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Disponível para projetos</span>
-                </div>
+                
               </div>
 
               {/* Stacks no Desktop */}
