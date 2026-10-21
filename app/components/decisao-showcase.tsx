@@ -16,8 +16,7 @@ interface StageConfig {
   label: string;
   headline: string;
   statement: string;
-  description: string;
-  points: string[];
+  phrase: string;
 }
 
 const STAGES: StageConfig[] = [
@@ -27,9 +26,7 @@ const STAGES: StageConfig[] = [
     label: "Ficar na mesma",
     headline: "Mais do mesmo.",
     statement: "Ficar na mesma é ficar para trás.",
-    description:
-      "Os mesmos processos manuais, os mesmos gargalos e, ano após ano, mais distante do que seus concorrentes já estão automatizando.",
-    points: ["Sem novos canais de clientes", "Processos dependentes de esforço braçal", "Sem previsibilidade ou dados reais"],
+    phrase: "Pilhas de papéis, notas perdidas e retrabalho manual travando sua operação.",
   },
   {
     id: "mudar",
@@ -37,9 +34,7 @@ const STAGES: StageConfig[] = [
     label: "Mudar & Estruturar",
     headline: "Construir a base certa.",
     statement: "Estratégia clara e presença digital consistente.",
-    description:
-      "Alinhar posicionamento, infraestrutura moderna e automação para eliminar atritos operacionais e atrair oportunidades qualificadas.",
-    points: ["Interface ágil em todos os dispositivos", "Automação de rotinas e atendimento", "Arquitetura fluida e escalável"],
+    phrase: "Telas e sistemas Gambit integrados operando juntos sem nenhuma fricção.",
   },
   {
     id: "avancar",
@@ -47,9 +42,7 @@ const STAGES: StageConfig[] = [
     label: "Avançar",
     headline: "Crescer com previsibilidade.",
     statement: "Decisões guiadas por dados, tração contínua.",
-    description:
-      "Sua empresa operando em alto nível: captação ativa, métricas em tempo real e inteligência artificial aplicada onde gera lucro.",
-    points: ["Clientes chegando até você", "Operação rodando no piloto automático", "Retorno mensurável sobre o investimento"],
+    phrase: "Dinheiro no caixa aumentando com tração comprovada em tempo real.",
   },
 ];
 
@@ -58,8 +51,7 @@ export default function DecisaoShowcase() {
   const pinSectionRef = useRef<HTMLDivElement>(null);
   const deviceFrameRef = useRef<HTMLDivElement>(null);
 
-  // Sub-elementos do Mockup
-  const notchRef = useRef<HTMLDivElement>(null);
+  // Sub-elementos
   const topBarRef = useRef<HTMLDivElement>(null);
   const stage1ContentRef = useRef<HTMLDivElement>(null);
   const stage2ContentRef = useRef<HTMLDivElement>(null);
@@ -69,47 +61,56 @@ export default function DecisaoShowcase() {
 
   const [activeStage, setActiveStage] = useState<number>(0);
   const scrollTriggerInstanceRef = useRef<ScrollTrigger | null>(null);
+  const lenisInstanceRef = useRef<Lenis | null>(null);
 
   useGSAP(
     () => {
-      // 1. Lenis Smooth Scroll
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        orientation: "vertical",
-        gestureOrientation: "vertical",
-        smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 2,
-      });
+      // 1. Lenis Smooth Scroll apenas no Desktop (sem touch hijacking no celular)
+      const isTouchDevice =
+        typeof window !== "undefined" &&
+        ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
-      const tickerUpdate = (time: number) => {
-        lenis.raf(time * 1000);
-      };
-      gsap.ticker.add(tickerUpdate);
-      gsap.ticker.lagSmoothing(0);
-      lenis.on("scroll", ScrollTrigger.update);
+      let lenis: Lenis | null = null;
+      let tickerUpdate: ((time: number) => void) | null = null;
+
+      if (!isTouchDevice && window.innerWidth >= 1024) {
+        lenis = new Lenis({
+          duration: 1.2,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: "vertical",
+          gestureOrientation: "vertical",
+          smoothWheel: true,
+          wheelMultiplier: 1,
+        });
+
+        lenisInstanceRef.current = lenis;
+
+        tickerUpdate = (time: number) => {
+          lenis?.raf(time * 1000);
+        };
+        gsap.ticker.add(tickerUpdate);
+        gsap.ticker.lagSmoothing(0);
+        lenis.on("scroll", ScrollTrigger.update);
+      }
 
       // 2. Responsive & Reduced Motion via MatchMedia
       const mm = gsap.matchMedia();
 
       mm.add(
         {
-          isDesktop: "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-          isMobile: "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
+          isDesktop: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
+          isMobile: "(max-width: 1023px) and (prefers-reduced-motion: no-preference)",
           isReducedMotion: "(prefers-reduced-motion: reduce)",
         },
         (context: gsap.Context) => {
-          const { isDesktop, isMobile, isReducedMotion } = (context.conditions || {}) as {
+          const { isDesktop, isReducedMotion } = (context.conditions || {}) as {
             isDesktop?: boolean;
-            isMobile?: boolean;
             isReducedMotion?: boolean;
           };
 
           if (isReducedMotion) return;
 
           const device = deviceFrameRef.current;
-          const notch = notchRef.current;
           const topBar = topBarRef.current;
           const s1 = stage1ContentRef.current;
           const s2 = stage2ContentRef.current;
@@ -119,11 +120,18 @@ export default function DecisaoShowcase() {
 
           if (!device || !containerRef.current || !pinSectionRef.current) return;
 
+          // NO MOBILE (< 1024px): SEM PINNING! Rolagem 100% natural, transição rápida pelas abas
+          if (!isDesktop) {
+            scrollTriggerInstanceRef.current = null;
+            return;
+          }
+
+          // NO DESKTOP: Timeline mestre vinculada à rolagem com hold real para cada estágio
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: containerRef.current,
               start: "top top",
-              end: isMobile ? "+=1800" : "+=2600",
+              end: "+=2600",
               pin: pinSectionRef.current,
               pinSpacing: true,
               scrub: 0.65,
@@ -132,9 +140,9 @@ export default function DecisaoShowcase() {
               onUpdate: (self: globalThis.ScrollTrigger) => {
                 const p = self.progress;
                 let stage = 0;
-                if (p < 0.33) {
+                if (p < 0.35) {
                   stage = 0;
-                } else if (p < 0.75) {
+                } else if (p < 0.70) {
                   stage = 1;
                 } else {
                   stage = 2;
@@ -151,28 +159,30 @@ export default function DecisaoShowcase() {
 
           scrollTriggerInstanceRef.current = tl.scrollTrigger as ScrollTrigger;
 
-          const dim1 = isDesktop
-            ? { width: 320, height: 570, borderRadius: 42, padding: "16px" }
-            : { width: 280, height: 460, borderRadius: 36, padding: "12px" };
+          const dim1 = { width: 480, height: 440, borderRadius: 24, padding: "20px" };
+          const dim2 = { width: 680, height: 440, borderRadius: 20, padding: "18px" };
+          const dim3 = { width: 680, height: 460, borderRadius: 24, padding: "22px" };
 
-          const dim2 = isDesktop
-            ? { width: 680, height: 430, borderRadius: 20, padding: "18px" }
-            : { width: 340, height: 460, borderRadius: 16, padding: "12px" };
-
-          const dim3 = isDesktop
-            ? { width: 780, height: 460, borderRadius: 16, padding: "20px" }
-            : { width: 350, height: 470, borderRadius: 12, padding: "14px" };
-
-          // Estado inicial (Ficar na mesma - Phone compacto e estagnado)
-          tl.addLabel("stage1", 0);
+          // Estado inicial Desktop explícito (Garante s1 100% visível)
           gsap.set(device, {
             width: dim1.width,
             height: dim1.height,
             borderRadius: dim1.borderRadius,
             padding: dim1.padding,
+            boxShadow: "0 20px 50px -12px rgba(0, 0, 0, 0.07), 0 0 1px rgba(0,0,0,0.1)",
           });
+          gsap.set(s1, { opacity: 1, scale: 1, filter: "blur(0px)", pointerEvents: "auto" });
+          gsap.set(s2, { opacity: 0, scale: 0.95, filter: "blur(6px)", pointerEvents: "none" });
+          gsap.set(s3, { opacity: 0, scale: 0.95, filter: "blur(6px)", pointerEvents: "none" });
+          gsap.set(topBar, { opacity: 0, y: -10, display: "none" });
+          gsap.set(dock, { opacity: 0, y: 15, display: "none" });
 
-          // Transição 1 -> 2: Mudar (Expansão para tela ampla de trabalho)
+          // 1. ESTÁGIO 1 (Ficar na mesma): Visível e com tempo de permanência real (0.0s até 1.2s)
+          tl.addLabel("stage1", 0);
+
+          // 2. TRANSIÇÃO 1 -> 2: Mudar (Morfose para a tela do Sistema Gambit) (1.2s até 2.4s)
+          tl.addLabel("toStage2", 1.2);
+
           tl.to(
             device,
             {
@@ -182,14 +192,8 @@ export default function DecisaoShowcase() {
               padding: dim2.padding,
               boxShadow: "0 25px 60px -15px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0,0,0,0.12)",
               ease: "power2.inOut",
-              duration: 1.5,
+              duration: 1.2,
             },
-            "toStage2"
-          );
-
-          tl.to(
-            notch,
-            { scaleX: 0, opacity: 0, ease: "power2.inOut", duration: 0.8 },
             "toStage2"
           );
 
@@ -200,7 +204,7 @@ export default function DecisaoShowcase() {
               scale: 0.95,
               filter: "blur(6px)",
               pointerEvents: "none",
-              duration: 0.7,
+              duration: 0.6,
               ease: "power2.inOut",
             },
             "toStage2"
@@ -208,40 +212,44 @@ export default function DecisaoShowcase() {
 
           tl.fromTo(
             topBar,
-            { opacity: 0, y: -10 },
-            { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+            { opacity: 0, y: -10, display: "none" },
+            { opacity: 1, y: 0, display: "flex", duration: 0.6, ease: "power2.out" },
             "toStage2+=0.3"
           );
 
           tl.fromTo(
             s2,
-            { opacity: 0, scale: 0.95, filter: "blur(6px)" },
+            { opacity: 0, scale: 0.95, filter: "blur(6px)", pointerEvents: "none" },
             {
               opacity: 1,
               scale: 1,
               filter: "blur(0px)",
               pointerEvents: "auto",
-              duration: 0.9,
+              duration: 0.7,
               ease: "power2.out",
             },
-            "toStage2+=0.3"
+            "toStage2+=0.4"
           );
 
-          tl.to(
+          tl.fromTo(
             dock,
+            { opacity: 0, y: 15, display: "none" },
             {
-              maxWidth: isDesktop ? 360 : 250,
-              paddingLeft: 20,
-              paddingRight: 20,
-              duration: 1.2,
-              ease: "power2.inOut",
+              opacity: 1,
+              y: 0,
+              display: "flex",
+              duration: 0.7,
+              ease: "power2.out",
             },
-            "toStage2"
+            "toStage2+=0.4"
           );
 
-          tl.addLabel("stage2", 1.8);
+          // 3. ESTÁGIO 2 (Mudar & Estruturar): Visível com permanência real (2.4s até 3.6s)
+          tl.addLabel("stage2", 2.4);
 
-          // Transição 2 -> 3: Avançar (Painel de controle / escala)
+          // 4. TRANSIÇÃO 2 -> 3: Avançar (Morfose para painel financeiro / escala) (3.6s até 4.8s)
+          tl.addLabel("toStage3", 3.6);
+
           tl.to(
             device,
             {
@@ -251,14 +259,14 @@ export default function DecisaoShowcase() {
               padding: dim3.padding,
               boxShadow: "0 30px 70px -15px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0,0,0,0.12)",
               ease: "power2.inOut",
-              duration: 1.5,
+              duration: 1.2,
             },
             "toStage3"
           );
 
           tl.to(
             topBar,
-            { opacity: 0, y: -6, duration: 0.5, ease: "power2.in" },
+            { opacity: 0, y: -6, duration: 0.4, ease: "power2.in" },
             "toStage3"
           );
 
@@ -269,7 +277,7 @@ export default function DecisaoShowcase() {
               scale: 0.96,
               filter: "blur(6px)",
               pointerEvents: "none",
-              duration: 0.6,
+              duration: 0.5,
               ease: "power2.inOut",
             },
             "toStage3"
@@ -277,48 +285,94 @@ export default function DecisaoShowcase() {
 
           tl.to(
             dock,
-            { y: 35, opacity: 0, duration: 0.6, ease: "power2.in" },
+            { y: 20, opacity: 0, duration: 0.4, ease: "power2.in" },
             "toStage3"
           );
 
           tl.fromTo(
             s3,
-            { opacity: 0, scale: 1.04, filter: "blur(6px)" },
+            { opacity: 0, scale: 1.04, filter: "blur(6px)", pointerEvents: "none" },
             {
               opacity: 1,
               scale: 1,
               filter: "blur(0px)",
               pointerEvents: "auto",
-              duration: 0.9,
+              duration: 0.7,
               ease: "power2.out",
             },
-            "toStage3+=0.3"
+            "toStage3+=0.4"
           );
 
-          tl.addLabel("stage3", 3.2);
+          // 5. ESTÁGIO 3 (Avançar): Visível com permanência real até o final da seção (4.8s até 6.0s)
+          tl.addLabel("stage3", 4.8);
+          tl.to({}, { duration: 1.2 });
         }
       );
 
       return () => {
         mm.revert();
-        gsap.ticker.remove(tickerUpdate);
-        lenis.destroy();
+        if (tickerUpdate) {
+          gsap.ticker.remove(tickerUpdate);
+        }
+        if (lenis) {
+          lenis.destroy();
+        }
+        lenisInstanceRef.current = null;
         ScrollTrigger.getAll().forEach((trigger: ScrollTrigger) => trigger.kill());
       };
     },
     { scope: containerRef }
   );
 
-  const handleTabClick = (index: number) => {
-    if (!scrollTriggerInstanceRef.current) return;
-    const st = scrollTriggerInstanceRef.current;
-    const progressMap = [0, 0.5, 1];
-    const targetScroll = st.start + (st.end - st.start) * progressMap[index];
+  // Troca no mobile (Instantânea e sem corte)
+  const switchMobileStage = (targetIdx: number) => {
+    setActiveStage(targetIdx);
 
-    window.scrollTo({
-      top: targetScroll,
-      behavior: "smooth",
-    });
+    const s1 = stage1ContentRef.current;
+    const s2 = stage2ContentRef.current;
+    const s3 = stage3ContentRef.current;
+    const pill = pillIndicatorRef.current;
+
+    if (pill) {
+      gsap.to(pill, {
+        xPercent: targetIdx * 100,
+        duration: 0.35,
+        ease: "power2.out",
+      });
+    }
+
+    if (targetIdx === 0) {
+      gsap.to(s1, { opacity: 1, scale: 1, filter: "blur(0px)", pointerEvents: "auto", duration: 0.3 });
+      gsap.to(s2, { opacity: 0, scale: 0.96, filter: "blur(6px)", pointerEvents: "none", duration: 0.2 });
+      gsap.to(s3, { opacity: 0, scale: 0.96, filter: "blur(6px)", pointerEvents: "none", duration: 0.2 });
+    } else if (targetIdx === 1) {
+      gsap.to(s1, { opacity: 0, scale: 0.96, filter: "blur(6px)", pointerEvents: "none", duration: 0.2 });
+      gsap.to(s2, { opacity: 1, scale: 1, filter: "blur(0px)", pointerEvents: "auto", duration: 0.3 });
+      gsap.to(s3, { opacity: 0, scale: 0.96, filter: "blur(6px)", pointerEvents: "none", duration: 0.2 });
+    } else {
+      gsap.to(s1, { opacity: 0, scale: 0.96, filter: "blur(6px)", pointerEvents: "none", duration: 0.2 });
+      gsap.to(s2, { opacity: 0, scale: 0.96, filter: "blur(6px)", pointerEvents: "none", duration: 0.2 });
+      gsap.to(s3, { opacity: 1, scale: 1, filter: "blur(0px)", pointerEvents: "auto", duration: 0.3 });
+    }
+  };
+
+  const handleTabClick = (index: number) => {
+    if (scrollTriggerInstanceRef.current) {
+      const st = scrollTriggerInstanceRef.current;
+      const progressMap = [0.08, 0.50, 0.92];
+      const targetScroll = st.start + (st.end - st.start) * progressMap[index];
+
+      if (lenisInstanceRef.current) {
+        lenisInstanceRef.current.scrollTo(targetScroll, { duration: 0.9 });
+      } else {
+        window.scrollTo({
+          top: targetScroll,
+          behavior: "smooth",
+        });
+      }
+    } else {
+      switchMobileStage(index);
+    }
   };
 
   const current = STAGES[activeStage];
@@ -339,20 +393,17 @@ export default function DecisaoShowcase() {
         aria-hidden="true"
       />
 
-      {/* Conteúdo Fixo durante o Scroll Pinning */}
       <div
         ref={pinSectionRef}
-        className="min-h-screen w-full flex items-center justify-center px-6 sm:px-8 lg:px-14 py-16"
+        className="w-full lg:h-screen lg:max-h-[100dvh] flex flex-col items-center justify-center px-4 sm:px-8 lg:px-14 py-8 lg:py-6"
       >
-        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <div className="w-full max-w-5xl mx-auto flex flex-col items-center">
           
           {/* ============================================================== */}
-          {/* COLUNA ESQUERDA: Controles e Conteúdo dos Estágios             */}
+          {/* 1. SELETOR DE ABAS ESTILO PILL MINIMALISTA                     */}
           {/* ============================================================== */}
-          <div className="lg:col-span-5 flex flex-col justify-center space-y-7 z-10">
-            {/* Seletor de Abas Estilo Pill Minimalista */}
+          <div className="w-full max-w-lg mb-4">
             <div className="p-1.5 bg-zinc-100 border border-zinc-200/80 rounded-2xl relative flex items-center shadow-xs">
-              {/* Indicador deslizante suave */}
               <div
                 ref={pillIndicatorRef}
                 className="absolute top-1.5 bottom-1.5 left-1.5 w-[calc((100%-12px)/3)] bg-white border border-zinc-200/90 rounded-xl shadow-xs pointer-events-none transition-shadow"
@@ -372,309 +423,376 @@ export default function DecisaoShowcase() {
                 </button>
               ))}
             </div>
-
-            {/* Card com Descrição Dinâmica dos estágios */}
-            <div className="relative min-h-[190px] p-6 rounded-2xl bg-zinc-50/80 border border-zinc-200/80 backdrop-blur-xs">
-              <div className="transition-all duration-300">
-                <div className="text-xs font-mono uppercase tracking-widest text-zinc-400 mb-1">
-                  {current.badge}
-                </div>
-                <h3 className="font-serif text-2xl font-semibold text-zinc-900 mb-2">
-                  {current.headline}
-                </h3>
-                <p className="text-sm text-zinc-600 leading-relaxed">
-                  {current.description}
-                </p>
-
-                {/* Pontos de impacto */}
-                <ul className="mt-4 pt-4 border-t border-zinc-200/80 space-y-2">
-                  {current.points.map((pt, i) => (
-                    <li
-                      key={i}
-                      className="text-xs font-medium text-zinc-700 flex items-center gap-2"
-                    >
-                      <span
-                        className={`h-1.5 w-1.5 rounded-full ${
-                          activeStage === 0
-                            ? "bg-zinc-400"
-                            : activeStage === 1
-                            ? "bg-zinc-700"
-                            : "bg-emerald-600"
-                        }`}
-                      />
-                      {pt}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* CTA de Ação */}
-            <div>
-              <a
-                href="#contato"
-                className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-900 px-7 text-sm font-medium text-white transition-colors hover:bg-zinc-700"
-              >
-                Quero evoluir
-              </a>
-            </div>
           </div>
 
           {/* ============================================================== */}
-          {/* COLUNA DIREITA: Palco de Morphing Clean Branco                  */}
+          {/* 2. FRASE DIRETA E CONCISA (Sem textos longos para não poluir)  */}
           {/* ============================================================== */}
-          <div className="lg:col-span-7 flex items-center justify-center relative min-h-[500px] lg:min-h-[620px]">
-            {/* Contornos arquitetônicos sutis de fundo */}
-            <div
-              className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40"
-              aria-hidden="true"
-            >
-              <div className="w-[96%] h-[96%] border border-dashed border-zinc-300/80 rounded-3xl" />
-            </div>
+          <div className="w-full text-center px-4 my-2 min-h-[50px] flex items-center justify-center z-10">
+            <p className="text-sm sm:text-base font-semibold text-zinc-900 leading-snug max-w-xl transition-all duration-300">
+              {current?.phrase}
+            </p>
+          </div>
 
-            {/* O DISPOSITIVO QUE SOFRE O MORPHING CONTÍNUO */}
+          {/* ============================================================== */}
+          {/* 3. PALCO DA ANIMAÇÃO: TOTALMENTE VISÍVEL E LIVRE               */}
+          {/* ============================================================== */}
+          {/* No mobile: Container leve 100% visível sem wrapper rígido      */}
+          {/* No desktop: Frame com morphing cinematográfico                 */}
+          <div className="w-full flex items-center justify-center relative min-h-[300px] sm:min-h-[340px] lg:min-h-[470px]">
             <div
               ref={deviceFrameRef}
-              className="relative bg-white border border-zinc-200/90 shadow-xl flex flex-col justify-between overflow-hidden transition-colors"
+              className="relative w-full max-w-[420px] lg:max-w-none bg-white lg:border lg:border-zinc-200/90 lg:shadow-xl rounded-2xl lg:rounded-3xl flex flex-col justify-between overflow-hidden"
               style={{
-                width: 320,
-                height: 570,
-                borderRadius: 42,
-                boxShadow:
-                  "0 20px 45px -10px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0,0,0,0.12)",
+                minHeight: 280,
               }}
             >
-              {/* Brilho de borda superior */}
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-200 to-transparent" />
-
-              {/* 1. MOLDURA TOPO: NOTCH OU TOPBAR */}
-              <div className="relative z-20 flex flex-col items-center justify-center w-full">
-                {/* Notch Mobile */}
-                <div
-                  ref={notchRef}
-                  className="w-24 h-4 bg-zinc-900 rounded-full flex items-center justify-between px-2.5 mx-auto shadow-xs"
-                >
-                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-700" />
-                  <div className="w-2 h-2 rounded-full bg-zinc-950 flex items-center justify-center">
-                    <div className="w-1 h-1 rounded-full bg-zinc-600" />
-                  </div>
+              {/* Topbar exclusiva desktop no sistema Gambit */}
+              <div
+                ref={topBarRef}
+                className="hidden lg:flex w-full items-center justify-between pb-2.5 pt-0.5 border-b border-zinc-200 px-1 opacity-0"
+              >
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                 </div>
-
-                {/* Topbar Desktop */}
-                <div
-                  ref={topBarRef}
-                  className="w-full flex items-center justify-between pb-2.5 pt-0.5 border-b border-zinc-200 px-1 opacity-0"
-                >
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
-                  </div>
-                  <span className="text-[11px] font-mono text-zinc-500">
-                    gambit://workflow-hub
-                  </span>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-mono">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span>ativo</span>
-                  </div>
+                <span className="text-[11px] font-mono text-zinc-500 font-medium">
+                  gambit://workspace-os
+                </span>
+                <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-mono">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>online</span>
                 </div>
               </div>
 
-              {/* 2. CONTEÚDO MORPHING INTERNO */}
-              <div className="relative flex-1 w-full h-full my-auto overflow-hidden">
+              {/* ÁREA PRINCIPAL DAS ANIMAÇÕES */}
+              <div className="relative flex-1 w-full h-full min-h-[260px] sm:min-h-[300px] overflow-hidden">
                 
-                {/* ESTÁGIO 1: Ficar na mesma (Lento, estagnado, tela única) */}
+                {/* ----------------------------------------------------------- */}
+                {/* 1. PAPÉIS ACUMULADOS & GARGALOS (SVG LIVRE)                 */}
+                {/* ----------------------------------------------------------- */}
                 <div
                   ref={stage1ContentRef}
-                  className="absolute inset-0 flex flex-col justify-between py-2 transition-transform duration-300"
+                  className="absolute inset-0 flex flex-col justify-between py-1"
                 >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono font-bold text-zinc-900">
-                        STATUS ATUAL
-                      </span>
-                      <span className="text-[10px] font-mono text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
-                        ESTAGNADO
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between px-2 pb-1 border-b border-zinc-100">
+                    <span className="text-[11px] font-mono font-bold text-rose-600 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                      GARGALO OPERACIONAL
+                    </span>
+                    <span className="text-[10px] font-mono text-zinc-500">
+                      processos manuais
+                    </span>
+                  </div>
 
-                    <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/80 shadow-xs space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-zinc-200 text-zinc-700 font-serif font-bold flex items-center justify-center text-sm">
-                          01
-                        </div>
-                        <div>
-                          <div className="text-xs font-semibold text-zinc-900">
-                            Processos Manuais
-                          </div>
-                          <div className="text-[10px] text-zinc-500">
-                            Sem integração de sistemas
-                          </div>
-                        </div>
-                      </div>
+                  {/* Ilustração SVG de Pilhas de Papéis */}
+                  <div className="relative flex-1 flex items-center justify-center py-1">
+                    <svg
+                      viewBox="0 0 340 180"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-full max-h-48 select-none"
+                    >
+                      <defs>
+                        <filter id="pShadow" x="-10%" y="-10%" width="130%" height="130%">
+                          <feDropShadow dx="0" dy="3" stdDeviation="4" floodOpacity="0.08" />
+                        </filter>
+                      </defs>
 
-                      <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
-                        <div className="h-full bg-zinc-400 w-1/4 rounded-full" />
-                      </div>
+                      {/* Base mesa */}
+                      <ellipse cx="170" cy="165" rx="140" ry="14" fill="#f4f4f5" />
 
-                      <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
-                        <span>Eficiência baixa</span>
-                        <span>25% capacidade</span>
-                      </div>
-                    </div>
+                      {/* Pasta de Trás */}
+                      <g transform="translate(60, 25) rotate(-8)">
+                        <rect width="105" height="120" rx="5" fill="#e4e4e7" stroke="#d4d4d8" strokeWidth="1.5" />
+                        <rect x="10" y="14" width="55" height="5" rx="2.5" fill="#a1a1aa" />
+                        <rect x="10" y="26" width="80" height="3" rx="1.5" fill="#d4d4d8" />
+                        <rect x="10" y="34" width="75" height="3" rx="1.5" fill="#d4d4d8" />
+                        <rect x="10" y="42" width="65" height="3" rx="1.5" fill="#d4d4d8" />
+                      </g>
 
-                    <div className="p-3 rounded-xl bg-white border border-zinc-200/80 flex items-center justify-between">
-                      <span className="text-xs text-zinc-600">
-                        Novos clientes este mês
-                      </span>
-                      <span className="text-xs font-mono font-bold text-zinc-800">
-                        0
-                      </span>
-                    </div>
+                      {/* Relatório do Meio com Post-it */}
+                      <g transform="translate(150, 20) rotate(7)" filter="url(#pShadow)">
+                        <rect width="115" height="130" rx="5" fill="#fafafa" stroke="#e4e4e7" strokeWidth="1.5" />
+                        <rect x="12" y="16" width="45" height="6" rx="2" fill="#f43f5e" fillOpacity="0.4" />
+                        <rect x="12" y="30" width="85" height="3" rx="1.5" fill="#e4e4e7" />
+                        <rect x="12" y="38" width="80" height="3" rx="1.5" fill="#e4e4e7" />
+                        <rect x="12" y="46" width="70" height="3" rx="1.5" fill="#e4e4e7" />
+                        
+                        {/* Post-it amarelo */}
+                        <g transform="translate(55, 60) rotate(-10)">
+                          <rect width="48" height="44" rx="3" fill="#fef08a" stroke="#fde047" strokeWidth="1" />
+                          <line x1="6" y1="10" x2="40" y2="10" stroke="#ca8a04" strokeWidth="2" strokeLinecap="round" />
+                          <line x1="6" y1="18" x2="35" y2="18" stroke="#ca8a04" strokeWidth="2" strokeLinecap="round" />
+                          <text x="6" y="32" fill="#854d0e" fontSize="8" fontFamily="monospace" fontWeight="bold">URGENTE!</text>
+                        </g>
+                      </g>
+
+                      {/* Nota fiscal Frente com Carimbo */}
+                      <g transform="translate(95, 35) rotate(-2)" filter="url(#pShadow)">
+                        <rect width="135" height="120" rx="5" fill="#ffffff" stroke="#cbd5e1" strokeWidth="1.5" />
+                        <rect x="12" y="14" width="28" height="4" rx="2" fill="#64748b" />
+                        <rect x="12" y="22" width="110" height="1" fill="#e2e8f0" />
+                        
+                        <rect x="12" y="30" width="110" height="12" rx="2" fill="#f8fafc" stroke="#f1f5f9" />
+                        <line x1="16" y1="36" x2="60" y2="36" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
+                        <line x1="95" y1="36" x2="115" y2="36" stroke="#e11d48" strokeWidth="2" strokeLinecap="round" />
+
+                        <rect x="12" y="46" width="110" height="12" rx="2" fill="#f8fafc" stroke="#f1f5f9" />
+                        <line x1="16" y1="52" x2="50" y2="52" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
+                        <line x1="95" y1="52" x2="115" y2="52" stroke="#e11d48" strokeWidth="2" strokeLinecap="round" />
+
+                        {/* Carimbo Pendente */}
+                        <g transform="translate(60, 68) rotate(-12)">
+                          <rect width="64" height="22" rx="3" fill="#fff1f2" stroke="#e11d48" strokeWidth="1.5" strokeDasharray="3 2" />
+                          <text x="6" y="15" fill="#be123c" fontSize="9" fontFamily="monospace" fontWeight="bold" letterSpacing="1">
+                            PENDENTE
+                          </text>
+                        </g>
+
+                        {/* Clipe */}
+                        <path d="M18 4 V18 C18 21 24 21 24 18 V6 C24 3 14 3 14 6 V20" stroke="#64748b" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+                      </g>
+                    </svg>
+                  </div>
+
+                  <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-zinc-50 border border-zinc-200/90 text-xs">
+                    <span className="text-zinc-600">Tempo perdido com burocracia</span>
+                    <span className="font-mono font-bold text-rose-600">~25h /semana</span>
                   </div>
                 </div>
 
-                {/* ESTÁGIO 2: Mudar (Interface expandida, janelas lado a lado) */}
+                {/* ----------------------------------------------------------- */}
+                {/* 2. MUDAR (SISTEMAS GAMBIT & TELAS ENCAIXANDO)               */}
+                {/* ----------------------------------------------------------- */}
                 <div
                   ref={stage2ContentRef}
                   className="absolute inset-0 opacity-0 pointer-events-none flex flex-col justify-between py-1"
                 >
-                  <div className="grid grid-cols-12 gap-3 h-[85%]">
-                    <div className="col-span-7 p-4 rounded-xl bg-zinc-50 border border-zinc-200 flex flex-col justify-between">
-                      <div className="flex items-center justify-between border-b border-zinc-200/80 pb-2">
-                        <span className="text-xs font-semibold text-zinc-900 flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
-                          Atração & Conversão
-                        </span>
-                        <span className="text-[10px] font-mono text-zinc-500">
-                          +184%
-                        </span>
-                      </div>
-
-                      <div className="flex items-end gap-1.5 h-24 pt-2">
-                        {[25, 40, 32, 55, 68, 60, 75, 82, 70, 88, 95, 100].map(
-                          (val, i) => (
-                            <div
-                              key={i}
-                              className="flex-1 bg-zinc-900 rounded-t-xs hover:bg-zinc-700 transition-colors"
-                              style={{ height: `${val}%` }}
-                            />
-                          )
-                        )}
-                      </div>
-
-                      <div className="flex justify-between text-[10px] text-zinc-500 font-mono pt-2 border-t border-zinc-200/80">
-                        <span>Fluxo contínuo</span>
-                        <span className="text-zinc-900 font-medium">Validado</span>
-                      </div>
-                    </div>
-
-                    <div className="col-span-5 p-4 rounded-xl bg-zinc-900 text-white flex flex-col justify-between">
-                      <div className="flex items-center justify-between text-xs border-b border-zinc-800 pb-2 font-mono">
-                        <span>automacao.ts</span>
-                        <span className="text-emerald-400 text-[10px]">rodando</span>
-                      </div>
-                      <div className="space-y-1.5 text-[10px] font-mono text-zinc-400 py-1">
-                        <p className="text-zinc-200">&gt; lead capturado</p>
-                        <p>✓ qualificação via IA</p>
-                        <p>✓ agendamento direto</p>
-                        <p className="text-emerald-400">✓ notificação enviada</p>
-                      </div>
-                      <div className="text-[10px] text-zinc-400 font-mono">
-                        0 esforço braçal
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ESTÁGIO 3: Avançar (Painel de escala / visão executiva) */}
-                <div
-                  ref={stage3ContentRef}
-                  className="absolute inset-0 opacity-0 pointer-events-none flex flex-col justify-between"
-                >
-                  <div className="flex items-center justify-between pb-3 border-b border-zinc-200">
-                    <div>
-                      <div className="text-xs font-mono uppercase tracking-widest text-zinc-500">
-                        PAINEL EXECUTIVO
-                      </div>
-                      <div className="text-base font-serif font-bold text-zinc-900">
-                        Operação Escalável & Inteligente
-                      </div>
-                    </div>
-                    <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-mono font-medium">
-                      Alto Impacto
+                  <div className="flex items-center justify-between px-2 pb-1 border-b border-zinc-100">
+                    <span className="text-[11px] font-mono font-bold text-amber-600 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-sm bg-amber-500" />
+                      SISTEMA GAMBIT ATIVO
+                    </span>
+                    <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-medium">
+                      100% Integrado
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3 my-auto">
-                    {[
-                      {
-                        label: "Tempo Poupado",
-                        val: "18h /sem",
-                        desc: "rotinas automatizadas",
-                      },
-                      {
-                        label: "Conversão",
-                        val: "3.4x",
-                        desc: "presença digital sólida",
-                      },
-                      {
-                        label: "Retorno",
-                        val: "100%",
-                        desc: "resultado mensurável",
-                      },
-                    ].map((item, i) => (
-                      <div
-                        key={i}
-                        className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/90 flex flex-col justify-between h-32"
-                      >
-                        <span className="text-[11px] uppercase font-mono text-zinc-500">
-                          {item.label}
-                        </span>
-                        <div>
-                          <div className="text-2xl font-bold font-serif text-zinc-900">
-                            {item.val}
-                          </div>
-                          <div className="text-[10px] text-zinc-500">
-                            {item.desc}
-                          </div>
+                  <div className="grid grid-cols-12 gap-2.5 my-auto py-1">
+                    {/* Peças integradas */}
+                    <div className="col-span-12 sm:col-span-7 p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex flex-col justify-between">
+                      <div className="grid grid-cols-3 gap-1.5">
+                        <div className="p-2 bg-white rounded-lg border border-amber-300 shadow-xs flex flex-col items-center justify-center text-center">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.75"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-4 h-4 text-amber-600 mb-1"
+                          >
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                            <line x1="12" y1="18" x2="12.01" y2="18" />
+                          </svg>
+                          <span className="text-[10px] font-bold text-zinc-800">Mobile CRM</span>
+                          <span className="text-[8px] font-mono text-emerald-600">Conectado</span>
+                        </div>
+                        <div className="p-2 bg-white rounded-lg border border-amber-300 shadow-xs flex flex-col items-center justify-center text-center">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-4 h-4 text-amber-500 mb-1"
+                          >
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                          </svg>
+                          <span className="text-[10px] font-bold text-zinc-800">IA & Flow</span>
+                          <span className="text-[8px] font-mono text-emerald-600">Ativo</span>
+                        </div>
+                        <div className="p-2 bg-white rounded-lg border border-amber-300 shadow-xs flex flex-col items-center justify-center text-center">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.75"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-4 h-4 text-amber-600 mb-1"
+                          >
+                            <rect x="3" y="4" width="18" height="12" rx="2" />
+                            <line x1="2" y1="20" x2="22" y2="20" />
+                          </svg>
+                          <span className="text-[10px] font-bold text-zinc-800">Site & Web</span>
+                          <span className="text-[8px] font-mono text-emerald-600">Sincronizado</span>
                         </div>
                       </div>
-                    ))}
+
+                      <div className="mt-2 p-1.5 rounded-lg bg-zinc-900 text-white flex items-center justify-between text-[10px] font-mono">
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                          <span>Pipeline Automatizado</span>
+                        </span>
+                        <span className="text-zinc-400">0 retrabalho</span>
+                      </div>
+                    </div>
+
+                    {/* Telas Responsivas */}
+                    <div className="col-span-12 sm:col-span-5 p-3 rounded-xl bg-zinc-900 text-white flex flex-col justify-between">
+                      <div className="space-y-1.5">
+                        <div className="p-1.5 rounded bg-zinc-800/80 border border-zinc-700/80 flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-zinc-200 flex items-center gap-1.5">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.75"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="w-3.5 h-3.5 text-zinc-400"
+                            >
+                              <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                              <line x1="12" y1="18" x2="12.01" y2="18" />
+                            </svg>
+                            App Mobile
+                          </span>
+                          <span className="text-[9px] font-mono text-emerald-400">Pronto</span>
+                        </div>
+                        <div className="p-1.5 rounded bg-zinc-800/80 border border-zinc-700/80 flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-zinc-200 flex items-center gap-1.5">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.75"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="w-3.5 h-3.5 text-zinc-400"
+                            >
+                              <rect x="2" y="3" width="20" height="14" rx="2" />
+                              <line x1="8" y1="21" x2="16" y2="21" />
+                              <line x1="12" y1="17" x2="12" y2="21" />
+                            </svg>
+                            Web Dashboard
+                          </span>
+                          <span className="text-[9px] font-mono text-emerald-400">Ao Vivo</span>
+                        </div>
+                      </div>
+                      <div className="text-[9px] text-amber-300 font-mono pt-1 text-right">
+                        ✓ Sem gargalos manuais
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-zinc-500 font-mono pt-2 border-t border-zinc-200">
-                    <span>Crescimento com previsibilidade</span>
-                    <span className="font-semibold text-zinc-900">
-                      Gambit Engine
+                  <div className="hidden lg:flex justify-center w-full pt-1">
+                    <div
+                      ref={dockRef}
+                      className="w-full max-w-[200px] h-9 px-3 bg-zinc-100/90 border border-zinc-200/90 rounded-xl flex items-center justify-around shadow-xs"
+                    >
+                      {[true, false, false, false].map((active, i) => (
+                        <div
+                          key={i}
+                          className={`w-4 h-4 rounded flex items-center justify-center ${
+                            active ? "bg-zinc-900 text-white" : "bg-white text-zinc-400"
+                          }`}
+                        >
+                          <span className="w-1 h-1 rounded-full bg-current" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* ----------------------------------------------------------- */}
+                {/* 3. AVANÇAR (CIFRÃO CRESCENDO & MINI DASHBOARD)              */}
+                {/* ----------------------------------------------------------- */}
+                <div
+                  ref={stage3ContentRef}
+                  className="absolute inset-0 opacity-0 pointer-events-none flex flex-col justify-between py-1"
+                >
+                  <div className="flex items-center justify-between px-2 pb-1 border-b border-zinc-100">
+                    <span className="text-[11px] font-mono font-bold text-emerald-600 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      ESCALA & FATURAMENTO
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      R$ EM ALTA
                     </span>
                   </div>
-                </div>
 
-              </div>
-
-              {/* 3. DOCK MINIMALISTA */}
-              <div className="relative z-20 flex justify-center w-full pt-2">
-                <div
-                  ref={dockRef}
-                  className="w-full max-w-[200px] h-10 px-3 bg-zinc-100/90 border border-zinc-200/90 rounded-2xl flex items-center justify-around shadow-xs transition-all"
-                >
-                  {[true, false, false, false].map((active, i) => (
-                    <div
-                      key={i}
-                      className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
-                        active
-                          ? "bg-zinc-900 text-white"
-                          : "bg-white border border-zinc-200/80 text-zinc-400"
-                      }`}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                  <div className="grid grid-cols-12 gap-2.5 my-auto py-1">
+                    {/* Card Cifrão */}
+                    <div className="col-span-12 sm:col-span-5 p-3 rounded-xl bg-gradient-to-br from-emerald-500/10 via-zinc-50 to-white border border-emerald-300 shadow-xs flex flex-col justify-between">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-mono font-semibold text-zinc-600">RECEITA ATIVA</span>
+                        <span className="w-7 h-7 rounded-full bg-emerald-500 text-white font-black flex items-center justify-center text-sm shadow-xs animate-bounce">
+                          $
+                        </span>
+                      </div>
+                      <div className="my-1">
+                        <div className="text-2xl font-black font-serif text-emerald-950">
+                          R$ 148.500
+                        </div>
+                        <div className="text-[10px] text-emerald-700 font-mono font-semibold">
+                          ▲ +38.2% este mês
+                        </div>
+                      </div>
+                      <div className="text-[9px] font-mono text-zinc-500">
+                        Fluxo contínuo no caixa
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
 
+                    {/* Mini Dashboard de Barras */}
+                    <div className="col-span-12 sm:col-span-7 p-3 rounded-xl bg-zinc-50 border border-zinc-200/90 flex flex-col justify-between">
+                      <div className="flex items-center justify-between border-b border-zinc-200/70 pb-1">
+                        <span className="text-[10px] font-semibold text-zinc-800">Tração Contínua</span>
+                        <span className="text-[9px] font-mono text-emerald-600 font-bold">+240%</span>
+                      </div>
+
+                      <div className="flex items-end gap-1.5 h-14 pt-2">
+                        {[20, 30, 42, 55, 68, 78, 88, 100].map((val, i) => (
+                          <div
+                            key={i}
+                            className="flex-1 bg-gradient-to-t from-emerald-600 to-emerald-400 rounded-t-xs"
+                            style={{ height: `${val}%` }}
+                          />
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-zinc-200/70 text-[9px] font-mono">
+                        <div>
+                          <span className="text-zinc-400 block text-[8px]">CAC</span>
+                          <span className="font-bold text-zinc-900">-45%</span>
+                        </div>
+                        <div>
+                          <span className="text-zinc-400 block text-[8px]">LTV</span>
+                          <span className="font-bold text-emerald-600">3.8x</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-zinc-50 border border-zinc-200/90 text-xs">
+                    <span className="text-zinc-600">Operação previsível e escalável</span>
+                    <span className="font-semibold text-emerald-700 font-mono">100% no controle</span>
+                  </div>
+                </div>
+
+              </div>
             </div>
+          </div>
+
+          {/* ============================================================== */}
+          {/* 4. BOTÃO CTA CENTRALIZADO LOGO ABAIXO DA ANIMAÇÃO              */}
+          {/* ============================================================== */}
+          <div className="w-full flex justify-center mt-5 sm:mt-6 z-20 relative">
+            <a
+              href="#contato"
+              className="inline-flex h-11 sm:h-12 items-center justify-center rounded-full bg-zinc-900 px-8 text-sm sm:text-base font-medium text-white transition-all hover:bg-zinc-800 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Quero evoluir
+            </a>
           </div>
 
         </div>
