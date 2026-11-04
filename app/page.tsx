@@ -4,6 +4,7 @@ import { Reveal } from "./components/reveal";
 import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
 import DecisaoShowcase from "./components/decisao-showcase";
+import { OrbitChessPieces } from "./components/falling-chess-pieces";
 
 const products = [
   {
@@ -165,25 +166,29 @@ export default function Home() {
       <main className="flex-1">
         <section
           id="inicio"
-          className="mx-auto flex max-w-5xl flex-col items-center px-6 pt-24 pb-20 text-center sm:pt-32"
+          className="relative isolate mx-auto flex max-w-5xl flex-col items-center px-6 pt-24 pb-20 text-center sm:pt-32 overflow-visible"
         >
+          {/* Container relativo centrado ao título para ancorar a órbita elíptica */}
+          <div className="relative w-full flex items-center justify-center">
+            <OrbitChessPieces />
 
-          <h1
-            className="load-reveal mt-6 font-display text-8xl font-bold tracking-tight text-zinc-900 sm:text-9xl lg:text-[20rem]"
-            style={{ animationDelay: "0.4s" }}
-          >
-            Gambit
-          </h1>
+            <h1
+              className="load-reveal relative z-20 mt-6 font-display text-8xl font-bold tracking-tight text-zinc-900 sm:text-9xl lg:text-[20rem]"
+              style={{ animationDelay: "0.4s" }}
+            >
+              Gambit
+            </h1>
+          </div>
 
           <p
-            className="load-reveal mt-4 max-w-2xl text-base leading-relaxed text-zinc-600 sm:text-lg"
+            className="load-reveal relative z-20 mt-4 max-w-2xl text-base leading-relaxed text-zinc-600 sm:text-lg"
             style={{ animationDelay: "0.7s" }}
           >
             Sua próxima <em className="font-serif italic">jogada</em> começa
             aqui. Ficar na mesma é ficar para trás.
           </p>
           <div
-            className="load-reveal mt-8 flex flex-col gap-3 sm:flex-row"
+            className="load-reveal relative z-20 mt-8 flex flex-col gap-3 sm:flex-row"
             style={{ animationDelay: "0.9s" }}
           >
             <a
