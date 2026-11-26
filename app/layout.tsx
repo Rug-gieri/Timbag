@@ -27,7 +27,7 @@ const mondwest = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Gambit — Estratégias digitais para evoluir seu negócio",
+  title: "Gambit",
   description:
     "Estratégias digitais para evoluir seu negócio. Ficar na mesma é ficar para trás. Mudar e avançar é a sua jogada.",
 };
