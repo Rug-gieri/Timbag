@@ -1,16 +1,9 @@
-import Link from "next/link";
-
 export function SiteFooter() {
   return (
-    <footer className="border-t border-zinc-200/70">
-      <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm text-zinc-500 sm:flex-row">
-        <Link href="/" className="font-serif text-xl font-semibold text-zinc-900">
-          Gambit
-        </Link>
-        <p>
-          © 2026 Gambit · Porto Velho, Rondônia. Estratégias digitais para
-          evoluir seu negócio.
-        </p>
+    <footer className="w-full">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-8 sm:px-12 text-xs font-mono tracking-wider text-zinc-600 sm:text-xs">
+        <span className="text-zinc-600">Gambit © 2026</span>
+        <span className="text-zinc-600">Porto Velho — RO</span>
       </div>
     </footer>
   );
