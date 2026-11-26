@@ -24,11 +24,10 @@ export default async function BlogPage() {
             Blog
           </p>
           <h1 className="mx-auto mt-3 max-w-2xl font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
-            Tecnologia sem jargão
+            Ensaios em tempos de texto generativo
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-zinc-600">
-            Ideias práticas sobre IA, automação e presença digital para o seu
-            negócio dar a próxima jogada.
+            Uma nova perspectiva sobre tecnologia, ruído e experiência.
           </p>
         </section>
 
@@ -40,10 +39,7 @@ export default async function BlogPage() {
                   href={`/blog/${post.slug}`}
                   className="group flex h-full flex-col rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-md"
                 >
-                  <span className="w-fit rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700">
-                    {post.category}
-                  </span>
-                  <h2 className="mt-5 font-serif text-xl leading-snug group-hover:underline">
+                  <h2 className="font-serif text-xl leading-snug group-hover:underline">
                     {post.title}
                   </h2>
                   <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-600">

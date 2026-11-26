@@ -91,12 +91,14 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
             <p className="mt-2 text-zinc-300">
               Conte o seu cenário e receba um caminho claro para evoluir.
             </p>
-            <Link
-              href="/#contato"
+            <a
+              href="https://wa.me/5569992418704?text=Ol%C3%A1%2C%20estou%20pronto%20para%20o%20futuro"
+              target="_blank"
+              rel="noopener noreferrer"
               className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-base font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
             >
               Falar com a Gambit
-            </Link>
+            </a>
           </aside>
         </article>
       </main>
