@@ -28,7 +28,7 @@ export function SiteHeader() {
   return (
     <header className="absolute top-0 left-0 right-0 z-50">
       <div
-        className={`mx-auto flex h-24 max-w-7xl items-center px-6 sm:px-12 ${
+        className={`flex h-20 w-full items-center px-6 ${
           isBlog ? "justify-start" : "justify-end"
         }`}
       >
@@ -41,9 +41,9 @@ export function SiteHeader() {
             <Image
               src="/chess_1-cropped.svg"
               alt="Gambit"
-              width={28}
-              height={28}
-              className="h-16 w-16 object-contain"
+              width={36}
+              height={36}
+              className="h-9 w-9 object-contain"
             />
           </Link>
         ) : (
