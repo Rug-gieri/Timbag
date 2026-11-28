@@ -35,12 +35,7 @@ interface MorphParticle {
   delayRatio: number;
 }
 
-// ============================================================================
-// PARÂMETROS DE CONTROLE DA ANIMAÇÃO (Ajuste aqui facilmente)
-// ============================================================================
-// VELOCIDADE DO GIRO: Multiplicador geral da velocidade orbital.
-// Exemplo: 1.0 (atual), 2.0 (dobro da velocidade), 0.5 (metade da velocidade).
-const ORBIT_SPEED_MULTIPLIER = 0.2;
+const ORBIT_SPEED_MULTIPLIER = 0.09;
 
 export function KnightToGambitMorph() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -160,14 +155,21 @@ export function KnightToGambitMorph() {
     // 0 = Cavalo (estável e imponente)
     // 1 = Céu Estrelado / Partículas ocupando toda a tela com movimento orbital cósmico
     // 2 = Palavra Gambit (estável e montada)
-    let currentStep: 0 | 1 | 2 = 0;
+    let currentStep: 0 | 1 | 2 = 1;
     let transitionStartTime = performance.now();
-    const TRANSITION_DURATION = 1400; // Tempo de expansão explosiva
+    const ORBIT_TRANSITION_DURATION = 7000; // Tempo da explosão galáctica + desaceleração bem longa até a órbita (0.09)
+    const SHAPE_TRANSITION_DURATION = 1200; // Tempo de formação do Cavalo / Gambit
 
-    // Curva cúbica suave e explosiva para expansão limpa (ease-out)
+    // Curva cúbica suave para formas (Cavalo / Gambit)
     const easeOutCubic = (x: number): number => {
       const t = Math.max(0, Math.min(1, x));
       return 1 - Math.pow(1 - t, 3);
+    };
+
+    // Curva quártica para desaceleração gradual e contínua da explosão até a órbita lenta
+    const easeOutQuart = (x: number): number => {
+      const t = Math.max(0, Math.min(1, x));
+      return 1 - Math.pow(1 - t, 4);
     };
 
     // Posição calculada com raios circulares reais (sem compressão/achatamento e permitindo escapar das bordas)
@@ -181,12 +183,9 @@ export function KnightToGambitMorph() {
       const orbitTime = time - transitionStartTime;
       const angle = p.baseAngle + orbitTime * p.orbitAngularSpeed;
 
-      // Pequena ondulação radial cósmica
-      const wave = Math.sin(time * p.waveFreq + p.twinklePhase) * p.waveAmp;
-
       return {
-        x: centerX + Math.cos(angle) * (r + wave),
-        y: centerY + Math.sin(angle) * (r + wave),
+        x: centerX + Math.cos(angle) * r,
+        y: centerY + Math.sin(angle) * r,
       };
     };
 
@@ -218,11 +217,11 @@ export function KnightToGambitMorph() {
     const render = (time: number) => {
       ctx.clearRect(0, 0, width, height);
 
-      const elapsed = time - transitionStartTime;
-      const isMoving = elapsed < TRANSITION_DURATION;
-      const progressRaw = Math.min(1, elapsed / TRANSITION_DURATION);
-
       const isOrbiting = currentStep === 1;
+      const activeDuration = isOrbiting ? ORBIT_TRANSITION_DURATION : SHAPE_TRANSITION_DURATION;
+      const elapsed = time - transitionStartTime;
+      const isMoving = elapsed < activeDuration;
+      const progressRaw = Math.min(1, elapsed / activeDuration);
 
       // Otimização de lote (batching) no modo estável do Cavalo / Gambit
       if (!isOrbiting && !isMoving) {
@@ -252,10 +251,40 @@ export function KnightToGambitMorph() {
         const target = getTargetPos(currentStep, p, time);
 
         if (isMoving) {
-          const pProgress = Math.max(0, (progressRaw - p.delayRatio) / (1 - p.delayRatio));
-          const eased = easeOutCubic(pProgress);
-          p.currentX = p.startX + (target.x - p.startX) * eased;
-          p.currentY = p.startY + (target.y - p.startY) * eased;
+          if (isOrbiting) {
+            // Sem delay aleatório por partícula para a galáxia expandir e desacelerar em uníssono,
+            // e easeOutQuart puro (derivada 1ª, 2ª e 3ª = 0 no final) para o encaixe final ser imperceptível
+            const eased = easeOutQuart(progressRaw);
+            const centerX = width * 0.5;
+            const centerY = height * 0.5;
+            const sx = p.startX - centerX;
+            const sy = p.startY - centerY;
+
+            const startR = Math.hypot(sx, sy);
+            const startAngle = Math.atan2(sy, sx);
+
+            const orbitTime = time - transitionStartTime;
+            const targetR = p.baseRadiusRatio * targets.diagonal;
+
+            // Delta angular constante até p.baseAngle (evita saltos de ±π quando targetAngle cruza 180°)
+            let baseDelta = (p.baseAngle - startAngle) % (Math.PI * 2);
+            if (baseDelta > Math.PI) baseDelta -= Math.PI * 2;
+            else if (baseDelta < -Math.PI) baseDelta += Math.PI * 2;
+
+            const r = startR + (targetR - startR) * eased;
+            const angle =
+              startAngle +
+              (baseDelta + Math.PI * 2) * eased +
+              orbitTime * p.orbitAngularSpeed * eased;
+
+            p.currentX = centerX + Math.cos(angle) * r;
+            p.currentY = centerY + Math.sin(angle) * r;
+          } else {
+            const pProgress = Math.max(0, (progressRaw - p.delayRatio) / (1 - p.delayRatio));
+            const eased = easeOutCubic(pProgress);
+            p.currentX = p.startX + (target.x - p.startX) * eased;
+            p.currentY = p.startY + (target.y - p.startY) * eased;
+          }
         } else {
           // Quando atinge o estado final:
           // Se for órbita (passo 1), acompanha fluidamente a trajetória contínua ao redor do centro
@@ -279,12 +308,22 @@ export function KnightToGambitMorph() {
           if (p.isStarShining && twinkle > 0.45) {
             ctx.fillStyle = ALPHA_TABLE[Math.max(0, alphaIndex - 20)];
             const crossLen = starSize * 1.7;
-            ctx.fillRect((p.currentX - crossLen * 0.5) | 0, p.currentY | 0, crossLen, 1);
-            ctx.fillRect(p.currentX | 0, (p.currentY - crossLen * 0.5) | 0, 1, crossLen);
+            ctx.fillRect(p.currentX - crossLen * 0.5, p.currentY, crossLen, 1);
+            ctx.fillRect(p.currentX, p.currentY - crossLen * 0.5, 1, crossLen);
           }
 
           ctx.fillStyle = ALPHA_TABLE[alphaIndex];
-          ctx.fillRect(p.currentX | 0, p.currentY | 0, starSize, starSize);
+          const px = p.currentX;
+          const py = p.currentY;
+          if (starSize > 2.2) {
+            // Dois retângulos cruzados (+) para suavizar os cantos sem perder performance
+            const coreSize = starSize * 0.6;
+            const inset = (starSize - coreSize) * 0.5;
+            ctx.fillRect(px, py + inset, starSize, coreSize);
+            ctx.fillRect(px + inset, py, coreSize, starSize);
+          } else {
+            ctx.fillRect(px, py, starSize, starSize);
+          }
         } else {
           // Forma em transição (Cavalo / Gambit)
           ctx.fillStyle = currentStep === 0 && p.isWhite ? COLOR_WHITE : COLOR_BLACK;
